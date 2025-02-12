@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Body from './components/Body'
-import LandingPage from './components/LandingPage'
+import Home from './components/Home'
 
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
       <BrowserRouter basename='/'>
         <Routes>
           <Route path='/' element={<Body />} > 
-            <Route path='/' element={<LandingPage />} />
+            <Route path='/' element={<Home />} />
           </Route>
         </Routes>
       </BrowserRouter>
