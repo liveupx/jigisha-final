@@ -1,15 +1,18 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Body from './components/Body'
+import LandingPage from './components/LandingPage'
 
 
 function App() {
-
   return (
     <>
-      <div>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-      </div>
-      
+      <BrowserRouter basename='/'>
+        <Routes>
+          <Route path='/' element={<Body />} > 
+            <Route path='/' element={<LandingPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
