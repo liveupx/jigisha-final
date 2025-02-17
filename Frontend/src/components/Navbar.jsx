@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
     return (
@@ -5,7 +6,7 @@ const Navbar = () => {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Jigisha</h1>
           <ul className="flex space-x-6">
-            <li className="hover:underline cursor-pointer">Home</li>
+            <li className="hover:underline cursor-pointer"><Link to = "/">Home</Link></li>
             <li className="hover:underline cursor-pointer">About Us</li>
             <li className="hover:underline cursor-pointer">Gallery</li>
             <li className="hover:underline cursor-pointer">Services</li>

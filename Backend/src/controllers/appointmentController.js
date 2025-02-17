@@ -50,18 +50,15 @@ exports.bookAppointment = async (req, res) => {
 // Get appointment by ID
 exports.getAppointmentById = async (req, res) => {
     try {
-        const appointment = await Appointment.findById(req.params.id).populate('doctorId');
+        const appointment = await Appointment.findById(req.params.id);
         if (!appointment) {
             return res.status(404).json({ message: 'Appointment not found' });
         }
 
-        const appointmentsWithImages = appointment.map(appointment => ({
-            ...appointment._doc,
-            photo: appointment.photo ? `data:image/jpeg;base64,${appointment.photo.toString('base64')}` : null,
-            aadharPhoto: appointment.aadharPhoto ? `data:image/jpeg;base64,${appointment.aadharPhoto.toString('base64')}` : null
-        }));
+        appointment.photo = appointment.photo ? `data:image/jpeg;base64,${appointment.photo.toString('base64')}` : null;
+        appointment.aadharPhoto = appointment.aadharPhoto ? `data:image/jpeg;base64,${appointment.aadharPhoto.toString('base64')}` : null;
 
-        res.status(200).json(appointmentsWithImages);
+        res.status(200).json(appointment);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

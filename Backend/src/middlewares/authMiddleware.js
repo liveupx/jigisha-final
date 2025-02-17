@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-exports.verifyAdmin = (req, res, next) => {
-    const token = req.header('Authorization');
-    if (!token) return res.status(403).json({ message: 'Access denied' });
-
+exports.verifyAdmin = async (req, res, next) => {
     try {
-        const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET);
-        if (decoded.role !== 'admin') return res.status(403).json({ message: 'Unauthorized' });
+        const {token} = req.cookies;
+        if (!token) return res.status(401).json({ message: 'Unauthorized' });
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.role !== 'admin') return res.status(401).json({ message: 'Unauthorized' });
 
         req.admin = decoded;
         next();
