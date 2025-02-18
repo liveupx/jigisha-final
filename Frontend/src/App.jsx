@@ -9,6 +9,8 @@ import Doctors from './admin-panel/Doctors'
 import Gallery from './admin-panel/Gallery'
 import Services from './admin-panel/Services'
 import AboutUs from './admin-panel/AboutUs'
+import AdminLogin from './admin-panel/AdminLogin'
+import { ProtectedRoute } from './admin-panel/ProtectedRoute'
 
 
 function App() {
@@ -21,14 +23,18 @@ function App() {
             <Route path='/appointment' element={<AppointmentModal />} />
           </Route>
 
+          <Route path='/admin/login' element={<AdminLogin />} />
+
+          <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<Layout title="Dashboard" />}>
-            <Route path="/admin" element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="doctors" element={<Doctors />} />
             <Route path="gallery" element={<Gallery />} />
             <Route path="services" element={<Services />} />
             <Route path="about-us" element={<AboutUs />} />
+          </Route>
           </Route>
 
         </Routes>

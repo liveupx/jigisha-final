@@ -6,8 +6,8 @@ const { verifyAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/', upload.fields([{ name: 'photo' }, { name: 'aadharPhoto' }]), bookAppointment);
-router.get('/:id', getAppointmentById);
-router.get('/', getAllAppointments);
-router.delete('/:id', deleteAppointment);
+router.get('/:id', verifyAdmin, getAppointmentById);
+router.get('/', verifyAdmin, getAllAppointments);
+router.delete('/:id', verifyAdmin, deleteAppointment);
 
 module.exports = router;

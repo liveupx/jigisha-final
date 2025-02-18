@@ -2,23 +2,26 @@ import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [doctorRes, appointmentRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/doctors"),
-          axios.get("http://localhost:3000/api/appointments"),
+          axios.get("http://localhost:3000/api/doctors", {withCredentials: true}),
+          axios.get("http://localhost:3000/api/appointments", {withCredentials: true}),
         ]);
         setDoctors(doctorRes.data);
         setAppointments(appointmentRes.data);
       } catch (error) {
         console.error("Error fetching data", error);
+        navigate('/admin/login');
       } finally {
         setLoading(false);
       }

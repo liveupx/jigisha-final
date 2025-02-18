@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchAppointments, deleteAppointment } from "./api/appointments";
 import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const loadAppointments = async () => {
     try {
@@ -12,6 +14,7 @@ const Appointments = () => {
       setAppointments(data);
     } catch (error) {
       console.error("Error fetching appointments:", error);
+      navigate('/admin/login');
     } finally {
       setLoading(false);
     }
