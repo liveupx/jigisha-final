@@ -1,5 +1,6 @@
 import  { useState, useEffect } from "react";
 import { fetchDoctors, addDoctor, updateDoctor, deleteDoctor } from "./api/doctors"; 
+import { useNavigate } from "react-router-dom";
 
 const DoctorManagementPage = () => {
   const [doctors, setDoctors] = useState([]); 
@@ -10,7 +11,7 @@ const DoctorManagementPage = () => {
   });
   const [isEditing, setIsEditing] = useState(false); 
   const [currentDoctorId, setCurrentDoctorId] = useState(null); 
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getDoctors = async () => {
@@ -19,6 +20,7 @@ const DoctorManagementPage = () => {
         setDoctors(data);
       } catch (error) {
         console.error("Error fetching doctors:", error);
+        navigate('/admin/login');
       }
     };
     getDoctors();
