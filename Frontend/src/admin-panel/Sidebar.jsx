@@ -8,9 +8,9 @@ const Sidebar = () => {
         <Link to="/admin/dashboard" className="hover:text-gray-300">Dashboard</Link>
         <Link to="/admin/appointments" className="hover:text-gray-300">Appointments</Link>
         <Link to="/admin/doctors" className="hover:text-gray-300">Doctors</Link>
-        <Link to="/admin/gallery" className="hover:text-gray-300">Gallery</Link>
+        {/* <Link to="/admin/gallery" className="hover:text-gray-300">Gallery</Link>
         <Link to="/admin/services" className="hover:text-gray-300">Services</Link>
-        <Link to="/admin/about-us" className="hover:text-gray-300">About Us</Link>
+        <Link to="/admin/about-us" className="hover:text-gray-300">About Us</Link> */}
       </nav>
     </div>
   );

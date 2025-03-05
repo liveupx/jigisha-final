@@ -102,10 +102,11 @@ const DoctorManagementPage = () => {
 
 
   const handleEdit = (doctor) => {
+    console.log(doctor.availableSlots);
     setFormData({
       name: doctor.name,
       specialization: doctor.specialization,
-      availableSlots: doctor.availableSlots.map((slot) => slot.toISOString()), 
+      availableSlots: doctor.availableSlots.map((slot) => new Date(slot).toISOString().slice(0, 16)), 
     });
     setIsEditing(true);
     setCurrentDoctorId(doctor._id);
@@ -195,7 +196,7 @@ const DoctorManagementPage = () => {
                 <td className="px-4 py-2 border-b">{doctor.specialization}</td>
                 <td className="px-4 py-2 border-b">
                   {doctor.availableSlots.map((slot, idx) => (
-                    <div key={idx}>{new Date(slot).toLocaleString()}</div> 
+                    <div key={idx}>{new Date(slot).toLocaleString('en-GB', {hour12: true})}</div> 
                   ))}
                 </td>
                 <td className="px-4 py-2 border-b">

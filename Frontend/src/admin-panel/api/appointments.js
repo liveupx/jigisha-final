@@ -10,12 +10,12 @@ export const fetchAppointments = async () => {
 
 // Fetch a single appointment by ID
 export const getAppointmentById = async (id) => {
-  const response = await axios.get(`${API_URL}/${id}`);
+  const response = await axios.get(`${API_URL}/${id}`, {withCredentials: true});
   return response.data;
 };
 
 // Delete appointment
 export const deleteAppointment = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+  const response = await axios.delete(`${API_URL}/${id}`, {withCredentials: true});
   return response.data;
 };
