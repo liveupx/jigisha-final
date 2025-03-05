@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchAppointments, deleteAppointment } from "./api/appointments";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaFilePdf } from "react-icons/fa"; // Added FaFilePdf for icon
 import { useNavigate } from "react-router-dom";
+import generatePDF from '../utils/generatePDF'; // Import generatePDF
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -35,6 +36,31 @@ const Appointments = () => {
     }
   };
 
+  const handleViewPDF = async (appointment) => {
+    try {
+      // Map appointment data to formData structure expected by generatePDF
+      const formData = {
+        name: appointment.name,
+        age: appointment.age,
+        gender: appointment.gender,
+        phone: appointment.phone,
+        address: appointment.address,
+        aadharNo: appointment.aadharNo,
+        doctorId: appointment.doctorId?._id,
+        appointmentDate: appointment.appointmentDate,
+        issue: appointment.issue,
+        photo: appointment.photo, // Already base64 from API
+      };
+
+      // Pass all appointments' doctorId references as doctors array
+      const doctors = appointments.map(appt => appt.doctorId);
+      console.log(doctors, formData, appointment._id);
+      await generatePDF(appointment._id, formData, doctors);
+      // window.open(pdfUrl, '_blank'); // Open in new tab
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   return (
     <div className="p-4">
@@ -72,10 +98,18 @@ const Appointments = () => {
                 <td className="p-3">
                   {appt.aadharPhoto && <img src={appt.aadharPhoto} alt="Aadhar" className="h-12 w-12 rounded" />}
                 </td>
-                <td className="p-3">
+                <td className="p-3 flex space-x-2">
+                  <button
+                    onClick={() => handleViewPDF(appt)}
+                    className="text-blue-500 hover:text-blue-700"
+                    title="View PDF"
+                  >
+                    <FaFilePdf />
+                  </button>
                   <button
                     onClick={() => handleDelete(appt._id)}
-                    className="text-red-500 hover:text-red-700 mx-2"
+                    className="text-red-500 hover:text-red-700"
+                    title="Delete"
                   >
                     <FaTrash />
                   </button>
