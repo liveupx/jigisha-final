@@ -7,7 +7,8 @@ const DoctorManagementPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     specialization: "",
-    availableSlots: [""] 
+    availableSlots: [""],
+    district: "" 
   });
   const [isEditing, setIsEditing] = useState(false); 
   const [currentDoctorId, setCurrentDoctorId] = useState(null); 
@@ -86,7 +87,7 @@ const DoctorManagementPage = () => {
         console.error("Error adding doctor:", error);
       }
     }
-    setFormData({ name: "", specialization: "", availableSlots: [""] });
+    setFormData({ name: "", specialization: "", availableSlots: [""], district: "" });
     setIsEditing(false);
   };
 
@@ -107,6 +108,7 @@ const DoctorManagementPage = () => {
       name: doctor.name,
       specialization: doctor.specialization,
       availableSlots: doctor.availableSlots.map((slot) => new Date(slot).toISOString().slice(0, 16)), 
+      district: doctor.district
     });
     setIsEditing(true);
     setCurrentDoctorId(doctor._id);
@@ -136,6 +138,17 @@ const DoctorManagementPage = () => {
               type="text"
               name="specialization"
               value={formData.specialization}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">District</label>
+            <input
+              type="text"
+              name="district"
+              value={formData.district}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md"
               required
@@ -185,6 +198,7 @@ const DoctorManagementPage = () => {
             <tr>
               <th className="px-4 py-2 text-left border-b">Name</th>
               <th className="px-4 py-2 text-left border-b">Specialization</th>
+              <th className="px-4 py-2 text-left border-b">District</th>
               <th className="px-4 py-2 text-left border-b">Available Slots</th>
               <th className="px-4 py-2 text-left border-b">Actions</th>
             </tr>
@@ -194,6 +208,7 @@ const DoctorManagementPage = () => {
               <tr key={doctor._id}>
                 <td className="px-4 py-2 border-b">{doctor.name}</td>
                 <td className="px-4 py-2 border-b">{doctor.specialization}</td>
+                <td className="px-4 py-2 border-b">{doctor.district}</td>
                 <td className="px-4 py-2 border-b">
                   {doctor.availableSlots.map((slot, idx) => (
                     <div key={idx}>{new Date(slot).toLocaleString('en-GB', {hour12: true})}</div> 

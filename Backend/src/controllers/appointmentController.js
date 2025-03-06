@@ -50,7 +50,7 @@ exports.bookAppointment = async (req, res) => {
 // Get appointment by ID
 exports.getAppointmentById = async (req, res) => {
     try {
-        const appointment = await Appointment.findById(req.params.id);
+        const appointment = await Appointment.findById(req.params.id).populate('doctorId');
         if (!appointment) {
             return res.status(404).json({ message: 'Appointment not found' });
         }
