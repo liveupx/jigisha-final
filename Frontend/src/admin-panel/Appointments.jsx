@@ -47,16 +47,16 @@ const Appointments = () => {
         address: appointment.address,
         aadharNo: appointment.aadharNo,
         doctorId: appointment.doctorId?._id,
+        district: appointment.doctorId?.district,
         appointmentDate: appointment.appointmentDate,
         issue: appointment.issue,
-        photo: appointment.photo, // Already base64 from API
+        photo: appointment.photo, 
       };
 
-      // Pass all appointments' doctorId references as doctors array
       const doctors = appointments.map(appt => appt.doctorId);
       console.log(doctors, formData, appointment._id);
       await generatePDF(appointment._id, formData, doctors);
-      // window.open(pdfUrl, '_blank'); // Open in new tab
+
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
@@ -77,6 +77,7 @@ const Appointments = () => {
               <th className="p-3">Gender</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Doctor</th>
+              <th className="p-3">District</th>
               <th className="p-3">Date</th>
               <th className="p-3">Photo</th>
               <th className="p-3">Aadhar</th>
@@ -91,6 +92,7 @@ const Appointments = () => {
                 <td className="p-3">{appt.gender || "N/A"}</td>
                 <td className="p-3">{appt.phone || "N/A"}</td>
                 <td className="p-3">{appt.doctorId?.name || "N/A"}</td>
+                <td className="p-3">{appt.doctorId?.district || "N/A"}</td>
                 <td className="p-3">{new Date(appt.appointmentDate).toLocaleString() || "N/A"}</td>
                 <td className="p-3">
                   {appt.photo && <img src={appt.photo} alt="Patient" className="h-12 w-12 rounded" />}

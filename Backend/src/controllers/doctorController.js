@@ -19,11 +19,11 @@ exports.getDoctors = async (req, res) => {
 // the frontend should send ISO date-time strings (e.g., "2025-02-15T10:00:00.000Z").
 exports.addDoctor = async (req, res) => {
     try {
-        const { name, specialization, availableSlots } = req.body;
+        const { name, specialization, availableSlots, district } = req.body;
 
         const formattedSlots = availableSlots.map(slot => new Date(slot));
 
-        const newDoctor = new Doctor({ name, specialization, availableSlots: formattedSlots });
+        const newDoctor = new Doctor({ name, specialization, availableSlots: formattedSlots, district });
         await newDoctor.save();
 
         res.status(201).json(newDoctor);
@@ -35,14 +35,14 @@ exports.addDoctor = async (req, res) => {
 // Update a doctor
 exports.updateDoctor = async (req, res) => {
     try {
-        const { name, specialization, availableSlots } = req.body;
+        const { name, specialization, availableSlots, district } = req.body;
         const { id } = req.params;
 
         const formattedSlots = availableSlots?.map(slot => new Date(slot));
 
         const updatedDoctor = await Doctor.findByIdAndUpdate(
             id,
-            { name, specialization, availableSlots: formattedSlots },
+            { name, specialization, availableSlots: formattedSlots, district },
             { new: true, runValidators: true }
         );
 
