@@ -7,7 +7,7 @@ const path = require('path');
 exports.bookAppointment = async (req, res) => {
     try {
         
-        const { name, age, gender, address, phone, idType, idNumber, issue, doctorId, appointmentDate } = req.body;
+        const { name, age, gender, address, phone, idType, idNumber, issue, doctorId, appointmentDate, livingStatus } = req.body;
         
         const requestedSlot = new Date(appointmentDate);
         const doctor = await Doctor.findById(doctorId);
@@ -32,7 +32,8 @@ exports.bookAppointment = async (req, res) => {
             idNumber,
             issue,
             doctorId,
-            appointmentDate: requestedSlot
+            appointmentDate: requestedSlot,
+            livingStatus
         });
 
         await newAppointment.save();

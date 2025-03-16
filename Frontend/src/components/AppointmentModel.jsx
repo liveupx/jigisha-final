@@ -3,9 +3,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import generatePDF from "../utils/generatePDF";
 import { appointmentFormWarningEnglish, appointmentFormWarningHindi } from "../utils/constants";
+import LivingStatusModal from "./LivingStatusModal";
 
 const AppointmentPage = () => {
   const [showWarning, setShowWarning] = useState(false);
+  const [showModal, setShowModal] = useState(true);
+  const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const initialState = {
@@ -20,16 +29,9 @@ const AppointmentPage = () => {
     idType: "",
     idNumber: "",
     issue: "",
+    livingStatus: "",
   };
-
   const [formData, setFormData] = useState(initialState);
-  const [doctors, setDoctors] = useState([]);
-  const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/doctors")
@@ -42,7 +44,7 @@ const AppointmentPage = () => {
       })
       .catch((err) => console.error("Error fetching doctors:", err));
   }, []);
-
+ 
   useEffect(() => {
     if (formData.district) {
       setFilteredDoctors(doctors.filter(doc => doc.district === formData.district));
@@ -59,7 +61,7 @@ const AppointmentPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "district") {
-      setFormData({ ...formData, district: value, doctorId: "", appointmentDate: "" }); // Reset doctor & slots on district change
+      setFormData({ ...formData, district: value, doctorId: "", appointmentDate: "" }); 
       setAvailableSlots([]);
     } else {
       setFormData({ ...formData, [name]: value });
@@ -67,7 +69,7 @@ const AppointmentPage = () => {
   };
 
   const handleSubmit = () => {
-    setShowWarning(true); // Show warning modal
+    setShowWarning(true); 
   };
 
   const confirmAppointment = async () => {
@@ -82,7 +84,6 @@ const AppointmentPage = () => {
     });
 
     try {
-
       const appointment = await axios.post("http://localhost:3000/api/appointments", formDataToSend, {
         headers: { "Content-Type": "application/json" }});
 
@@ -98,37 +99,46 @@ const AppointmentPage = () => {
     }
   };
 
+  const handleLivingStatusConfirm = (selectedStatus) => {
+    setFormData({ ...formData, livingStatus: selectedStatus }); 
+    setShowModal(false); 
+  };
+  
+
   return (
     <>
-    {/* Warning Modal */}
-{showWarning && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center border-2 border-red-600">
-      <h2 className="text-red-600 font-bold text-xl">⚠️ Disclaimer ⚠️</h2>
-      <p className="text-gray-800 mt-2">
-        {appointmentFormWarningHindi}
-      </p>
-      <p className="text-gray-800 mt-2">
-        {appointmentFormWarningEnglish}
-      </p>
+    {showModal && <LivingStatusModal onConfirm={handleLivingStatusConfirm} />}
 
-      <div className="mt-4 flex justify-center space-x-4">
-        <button 
-          onClick={confirmAppointment} 
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          Agree
-        </button>
-        <button 
-          onClick={() => navigate("/")} 
-          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-        >
-          Disagree
-        </button>
+    {/* Warning Modal */}
+    {showWarning && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center border-2 border-red-600">
+          <h2 className="text-red-600 font-bold text-xl">⚠️ Disclaimer ⚠️</h2>
+          <p className="text-gray-800 mt-2">
+            {appointmentFormWarningHindi}
+          </p>
+          <p className="text-gray-800 mt-2">
+            {appointmentFormWarningEnglish}
+          </p>
+
+          <div className="mt-4 flex justify-center space-x-4">
+            <button 
+              onClick={confirmAppointment} 
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Agree
+            </button>
+            <button 
+              onClick={() => navigate("/")} 
+              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            >
+              Disagree
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-)}
+    )}
+
     <div className="container mx-auto p-6 max-w-lg mt-20 px-4">
       <h2 className="text-xl font-bold text-[#311840] mb-4">Book an Appointment</h2>
 
