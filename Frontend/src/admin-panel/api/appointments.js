@@ -8,6 +8,21 @@ export const fetchAppointments = async () => {
   return response.data;
 };
 
+export const fetchTodaysAppointments = async () => {
+  const response = await axios.get(`${API_URL}/today`, { withCredentials: true });
+  return response.data;
+}
+
+export const fetchUpcomingAppointments = async () => {
+  const response = await axios.get(`${API_URL}/upcoming`, { withCredentials: true });
+  return response.data;
+}
+
+export const fetchPastAppointments = async () => {
+  const response = await axios.get(`${API_URL}/past`, { withCredentials: true });
+  return response.data;
+}
+
 // Fetch a single appointment by ID
 export const getAppointmentById = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`, {withCredentials: true});
