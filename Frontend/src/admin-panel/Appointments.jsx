@@ -45,16 +45,15 @@ const Appointments = () => {
         gender: appointment.gender,
         phone: appointment.phone,
         address: appointment.address,
-        aadharNo: appointment.aadharNo,
         doctorId: appointment.doctorId?._id,
         district: appointment.doctorId?.district,
         appointmentDate: appointment.appointmentDate,
         issue: appointment.issue,
-        photo: appointment.photo, 
+        idType: appointment.idType,
+        idNumber: appointment.idNumber,
       };
 
       const doctors = appointments.map(appt => appt.doctorId);
-      console.log(doctors, formData, appointment._id);
       await generatePDF(appointment._id, formData, doctors);
 
     } catch (error) {
@@ -73,33 +72,23 @@ const Appointments = () => {
           <thead>
             <tr className="bg-gray-800 text-white">
               <th className="p-3">Patient</th>
-              <th className="p-3">Age</th>
-              <th className="p-3">Gender</th>
+              <th className="p-3">Id</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Doctor</th>
               <th className="p-3">District</th>
               <th className="p-3">Date</th>
-              <th className="p-3">Photo</th>
-              <th className="p-3">Aadhar</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             {appointments.map((appt) => (
               <tr key={appt._id} className="border-b">
-                <td className="p-3">{appt.name || "N/A"}</td>
-                <td className="p-3">{appt.age || "N/A"}</td>
-                <td className="p-3">{appt.gender || "N/A"}</td>
+                <td className="p-3">{appt.name + "/" + appt.age + "/" + (appt.gender === "Male" ? "M" : appt.gender === "Female" ? "F" : "O") || "N/A"}</td>
+                <td className="p-3">{(appt.idType && appt.idNumber ? appt.idType +"-"+ appt.idNumber : "")|| "N/A"}</td>
                 <td className="p-3">{appt.phone || "N/A"}</td>
                 <td className="p-3">{appt.doctorId?.name || "N/A"}</td>
                 <td className="p-3">{appt.doctorId?.district || "N/A"}</td>
                 <td className="p-3">{new Date(appt.appointmentDate).toLocaleString() || "N/A"}</td>
-                <td className="p-3">
-                  {appt.photo && <img src={appt.photo} alt="Patient" className="h-12 w-12 rounded" />}
-                </td>
-                <td className="p-3">
-                  {appt.aadharPhoto && <img src={appt.aadharPhoto} alt="Aadhar" className="h-12 w-12 rounded" />}
-                </td>
                 <td className="p-3 flex space-x-2">
                   <button
                     onClick={() => handleViewPDF(appt)}
