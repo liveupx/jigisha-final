@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import generatePDF from "../utils/generatePDF";
+import { appointmentFormWarningEnglish, appointmentFormWarningHindi } from "../utils/constants";
 
 const AppointmentPage = () => {
+  const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
 
   const initialState = {
@@ -15,10 +17,9 @@ const AppointmentPage = () => {
     gender: "",
     address: "",
     phone: "",
-    aadharNo: "",
+    idType: "",
+    idNumber: "",
     issue: "",
-    photo: null,
-    aadharPhoto: null,
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -33,8 +34,10 @@ const AppointmentPage = () => {
   useEffect(() => {
     axios.get("http://localhost:3000/api/doctors")
       .then((res) => {
-        setDoctors(res.data);
-        const uniqueDistricts = [...new Set(res.data.map(doc => doc.district))]; // Extract unique districts
+        const doctorsWithSlots = res.data.filter(doc => doc.availableSlots.length > 0);
+        setDoctors(doctorsWithSlots);
+        
+        const uniqueDistricts = [...new Set(doctorsWithSlots.map(doc => doc.district))];
         setDistricts(uniqueDistricts);
       })
       .catch((err) => console.error("Error fetching doctors:", err));
@@ -63,11 +66,12 @@ const AppointmentPage = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+  const handleSubmit = () => {
+    setShowWarning(true); // Show warning modal
   };
 
-  const handleSubmit = async () => {
+  const confirmAppointment = async () => {
+    setShowWarning(false);
     setLoading(true);
     setError(null);
     setSuccessMessage("");
@@ -78,9 +82,9 @@ const AppointmentPage = () => {
     });
 
     try {
+
       const appointment = await axios.post("http://localhost:3000/api/appointments", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        headers: { "Content-Type": "application/json" }});
 
       setSuccessMessage("Appointment booked successfully!");
       await generatePDF(appointment.data.appointment._id, formData, doctors);
@@ -95,6 +99,36 @@ const AppointmentPage = () => {
   };
 
   return (
+    <>
+    {/* Warning Modal */}
+{showWarning && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center border-2 border-red-600">
+      <h2 className="text-red-600 font-bold text-xl">⚠️ Disclaimer ⚠️</h2>
+      <p className="text-gray-800 mt-2">
+        {appointmentFormWarningHindi}
+      </p>
+      <p className="text-gray-800 mt-2">
+        {appointmentFormWarningEnglish}
+      </p>
+
+      <div className="mt-4 flex justify-center space-x-4">
+        <button 
+          onClick={confirmAppointment} 
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Agree
+        </button>
+        <button 
+          onClick={() => navigate("/")} 
+          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+        >
+          Disagree
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     <div className="container mx-auto p-6 max-w-lg mt-20 px-4">
       <h2 className="text-xl font-bold text-[#311840] mb-4">Book an Appointment</h2>
 
@@ -151,25 +185,43 @@ const AppointmentPage = () => {
         <label className="block text-gray-700">Phone No.</label>
         <input type="tel" name="phone" className="w-full p-2 border rounded" placeholder="Enter phone number" onChange={handleChange} />
 
-        <label className="block text-gray-700">Aadhar No.</label>
-        <input type="text" name="aadharNo" className="w-full p-2 border rounded" placeholder="Enter Aadhar number" onChange={handleChange} />
+        <label className="block text-gray-700">Select ID Type</label>
+        <select
+          name="idType"
+          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          value={formData.idType}
+          required
+        >
+          <option value="">Select ID Type</option>
+          <option value="Aadhar">Aadhar</option>
+          <option value="PAN">PAN</option>
+          <option value="DL">Driving License</option>
+          <option value="VoterID">Voter ID</option>
+        </select>
 
-        <label className="block text-gray-700">Upload Photo</label>
-        <input type="file" name="photo" className="w-full p-2 border rounded" accept="image/*" onChange={handleFileChange} />
-
-        <label className="block text-gray-700">Upload Aadhar</label>
-        <input type="file" name="aadharPhoto" className="w-full p-2 border rounded" accept="image/*" onChange={handleFileChange} />
+        <label className="block text-gray-700 mt-2">Enter ID Number</label>
+        <input
+          type="text"
+          name="idNumber"
+          className="w-full p-2 border rounded"
+          placeholder="Enter selected ID number"
+          onChange={handleChange}
+          value={formData.idNumber}
+          required
+        />
 
         <label className="block text-gray-700">Issue (Optional)</label>
         <textarea name="issue" className="w-full p-2 border rounded" placeholder="Describe your issue" onChange={handleChange}></textarea>
 
         <button onClick={handleSubmit} className="bg-[#311840] text-white w-full p-2 rounded" disabled={loading}>
-          {loading ? "Booking..." : "Confirm"}
+            {loading ? "Booking..." : "Confirm"}
         </button>
-
+        
         <button onClick={() => navigate("/")} className="mt-4 text-[#311840] underline">Cancel</button>
       </div>
     </div>
+    </>
   );
 };
 
