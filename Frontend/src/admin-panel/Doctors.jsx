@@ -221,12 +221,12 @@ const DoctorManagementPage = () => {
                   >
                     Edit
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => handleDelete(doctor._id)}
                     className="bg-red-500 text-white px-4 py-2 rounded-md"
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

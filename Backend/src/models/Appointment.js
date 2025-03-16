@@ -12,6 +12,7 @@ const appointmentSchema = new mongoose.Schema({
         enum: ['Aadhar', 'PAN', 'DL', 'VoterID']
     },
     idNumber: { type: String, required: true },
+    livingStatus: { type: String },
     issue: { type: String, required: false },
     doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
     appointmentDate: { type: Date, required: true },

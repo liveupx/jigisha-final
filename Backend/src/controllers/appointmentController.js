@@ -60,12 +60,63 @@ exports.getAppointmentById = async (req, res) => {
     }
 };
 
-// Get all appointments (Admin only)
+// Get all appointments 
 exports.getAllAppointments = async (req, res) => {
     try {
         const appointments = await Appointment.find().populate('doctorId');
         
         res.status(200).json(appointments);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+// Get past appointments (appointments till yesterday)
+exports.getPastAppointments = async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+
+        const pastAppointments = await Appointment.find({ 
+            appointmentDate: { $lt: today } 
+        }).populate('doctorId');
+
+        res.status(200).json(pastAppointments);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+// Get today's appointments
+exports.getTodaysAppointments = async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); 
+
+        const todaysAppointments = await Appointment.find({ 
+            appointmentDate: { $gte: today, $lt: tomorrow } 
+        }).populate('doctorId');
+
+        res.status(200).json(todaysAppointments);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+// Get upcoming appointments (from tomorrow onwards)
+exports.getUpcomingAppointments = async (req, res) => {
+    try {
+        const tomorrow = new Date();
+        tomorrow.setHours(0, 0, 0, 0); 
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+
+        const upcomingAppointments = await Appointment.find({ 
+            appointmentDate: { $gte: tomorrow } 
+        }).populate('doctorId');
+
+        res.status(200).json(upcomingAppointments);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
